@@ -1,3 +1,13 @@
+What Worked and what didn't:
+
+Creating Idea: relatively smooth, met up once and both teammates had their own research to contribute to the discussion 
+
+WASD Movement, Art and Animation: Found a Top down asset and imported it. Struggled with the guidelines as I had to learn what a packagemanager, import it, but then instead of overwriting a project, create a new one for it. 
+
+Modified the speed variable from 3 to 5. 
+Began Adding dash mechanic.
+
+
 AI Generated:
 ---
 
