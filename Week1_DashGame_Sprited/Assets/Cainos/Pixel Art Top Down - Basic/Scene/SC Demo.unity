@@ -4936,6 +4936,62 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 257329672}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &258387984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 258387986}
+  - component: {fileID: 258387985}
+  m_Layer: 0
+  m_Name: UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &258387985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258387984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b16567e49dc954d94f492c2515350c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ControlsUI
+  xOffset: 20
+  yOffset: 20
+  keyBackgroundColor: {r: 0.15, g: 0.15, b: 0.2, a: 0.95}
+  keyBorderColor: {r: 0.4, g: 0.4, b: 0.5, a: 1}
+  keyTextColor: {r: 0.95, g: 0.95, b: 0.95, a: 1}
+  labelColor: {r: 0.7, g: 0.85, b: 1, a: 1}
+  panelColor: {r: 0.1, g: 0.1, b: 0.12, a: 0}
+  keySize: 24
+  keySpacing: 4
+  sectionSpacing: 24
+  fontSize: 10
+  labelFontSize: 12
+--- !u!4 &258387986
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258387984}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.79608, y: 4.56195, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &258539806
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5551,9 +5607,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 1447035740698889744, guid: 0e7976e0e5b928a41bafa31a92c46f34,
     type: 3}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &326523505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5970,7 +6030,7 @@ Transform:
   m_GameObject: {fileID: 376144702}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.1, y: 0.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12242,7 +12302,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.82, y: 2.93, z: -10}
+  m_LocalPosition: {x: 5.7200003, y: 3.01, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14186,8 +14246,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &710511924
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14956,8 +15020,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &781189522
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15874,8 +15942,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &871669411 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6644944589867386884, guid: b95acdc3b0c1a444c87723520fbab2f0,
@@ -18673,8 +18745,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1110315839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19198,8 +19274,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1177272031
 GameObject:
   m_ObjectHideFlags: 0
@@ -28939,8 +29019,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1563677320
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30734,8 +30818,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1696563834 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7947911505737750448, guid: 6d69371a87148ee4dac7b2b814437ffd,
@@ -32741,8 +32829,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1899773001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32846,8 +32938,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1905585801
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33129,9 +33225,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 1447035740698889744, guid: 0e7976e0e5b928a41bafa31a92c46f34,
     type: 3}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1941660996
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35363,8 +35463,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &927864205048161885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35745,8 +35849,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &2055102312537850835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35910,8 +36018,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explodeable
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &2224671757595287560 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5100217437599595380, guid: 8d15c39fd3e3cab47ab96fbaf6dc2f92,
@@ -36377,8 +36489,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   explosionForce: 8
-  destroyDelay: 0.05
   explosionEffect: {fileID: 0}
+  pushDuration: 0.08
+  freezeDuration: 0.25
+  shakeIntensity: 0.1
+  shakeSpeed: 50
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &5055698509990871160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36611,12 +36727,12 @@ PrefabInstance:
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.82
+      value: 5.7200003
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: 2.3899999
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
@@ -37483,6 +37599,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 258387986}
   - {fileID: 1467707186}
   - {fileID: 1622312051}
   - {fileID: 5628018140380570485}
