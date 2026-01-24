@@ -114,5 +114,3 @@ A simple top-down 2D prototype focused on **dash-based movement** and **strong g
 * Designed to be easily expandable with new effects or enemy types
 
 ---
-
-Just say which 👍
