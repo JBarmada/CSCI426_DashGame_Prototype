@@ -275,6 +275,12 @@ namespace Cainos.PixelArtTopDown_Basic
             // Stop the animator completely (no breathing animation)
             animator.speed = 0f;
             
+            // Show damage vignette (impact flash)
+            if (DamageVignette.Instance != null)
+            {
+                DamageVignette.Instance.Show();
+            }
+            
             // Wait for initial freeze duration (screen shake happens externally)
             yield return new WaitForSeconds(initialFreezeDuration);
 
@@ -332,6 +338,12 @@ namespace Cainos.PixelArtTopDown_Basic
             if (flashMaterial != null)
             {
                 flashMaterial.SetFloat("_FlashAmount", 0f);
+            }
+            
+            // Fade out damage vignette
+            if (DamageVignette.Instance != null)
+            {
+                DamageVignette.Instance.Hide();
             }
             
             // Show the player
