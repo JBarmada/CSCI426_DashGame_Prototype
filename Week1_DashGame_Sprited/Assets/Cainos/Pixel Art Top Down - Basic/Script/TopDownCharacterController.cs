@@ -34,6 +34,7 @@ namespace Cainos.PixelArtTopDown_Basic
         private Vector2 lastMoveDir = Vector2.down;
 
         public bool IsDashing => isDashing;
+        public Vector2 LastMoveDirection => lastMoveDir;
         private bool isDashing;
         private bool isBouncing;
         private bool isFrozen;
@@ -42,6 +43,11 @@ namespace Cainos.PixelArtTopDown_Basic
         private float dashCooldownTimer;
         
         private LayerMask originalExcludeLayers;
+        
+        // Spawn point for respawning after death
+        private Vector3 spawnPosition;
+        private int spawnLayer;
+        private string spawnSortingLayer;
 
         private void Start()
         {
@@ -49,10 +55,18 @@ namespace Cainos.PixelArtTopDown_Basic
             animator = GetComponent<Animator>();
             originalExcludeLayers = rb.excludeLayers;
             
+            // Store initial spawn position and layer settings
+            spawnPosition = transform.position;
+            spawnLayer = gameObject.layer;
+            
             // Set up flash material for damage effect
             spriteRenderer = GetComponent<SpriteRenderer>();
             if (spriteRenderer == null)
                 spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            
+            // Store initial sorting layer
+            if (spriteRenderer != null)
+                spawnSortingLayer = spriteRenderer.sortingLayerName;
             
             SetupFlashMaterial();
         }
@@ -230,16 +244,19 @@ namespace Cainos.PixelArtTopDown_Basic
 
         /// <summary>
         /// Called when the player hits a damaging object.
-        /// Freezes the player and plays the red flash effect.
+        /// Phase 1: Complete freeze (animation stops) + screen shake
+        /// Phase 2: Character shakes while fading to red
+        /// Phase 3: Explosion spawns, player disappears
+        /// Phase 4: Respawn at start position
         /// </summary>
-        public void TakeDamage(float freezeDuration, float flashDuration, System.Action onFlashComplete)
+        public void TakeDamage(float initialFreezeDuration, float flashDuration, float characterShakeIntensity, float characterShakeSpeed, float respawnDelay, System.Action onFlashComplete)
         {
             if (isFrozen) return; // Already taking damage
             
-            StartCoroutine(DamageSequence(freezeDuration, flashDuration, onFlashComplete));
+            StartCoroutine(DamageSequence(initialFreezeDuration, flashDuration, characterShakeIntensity, characterShakeSpeed, respawnDelay, onFlashComplete));
         }
 
-        private IEnumerator DamageSequence(float freezeDuration, float flashDuration, System.Action onFlashComplete)
+        private IEnumerator DamageSequence(float initialFreezeDuration, float flashDuration, float shakeIntensity, float shakeSpeed, float respawnDelay, System.Action onFlashComplete)
         {
             // End any current dash
             if (isDashing)
@@ -251,39 +268,87 @@ namespace Cainos.PixelArtTopDown_Basic
             rb.linearVelocity = Vector2.zero;
             animator.SetBool("IsMoving", false);
 
-            // Gradually flash to red
+            // Store original position for shake
+            Vector3 originalPosition = transform.position;
+
+            // === PHASE 1: COMPLETE FREEZE ===
+            // Stop the animator completely (no breathing animation)
+            animator.speed = 0f;
+            
+            // Wait for initial freeze duration (screen shake happens externally)
+            yield return new WaitForSeconds(initialFreezeDuration);
+
+            // === PHASE 2: CHARACTER SHAKE + RED FLASH ===
+            // Resume animator (breathing can play during this phase)
+            animator.speed = 1f;
+            
             float elapsed = 0f;
             while (elapsed < flashDuration)
             {
                 elapsed += Time.deltaTime;
                 float progress = elapsed / flashDuration;
                 
+                // Flash to red
                 if (flashMaterial != null)
                 {
                     flashMaterial.SetFloat("_FlashAmount", progress);
                 }
                 
+                // Shake the character model (intensity decreases slightly as we approach the end)
+                float currentShakeIntensity = shakeIntensity * (1f - progress * 0.3f);
+                float shakeX = Mathf.Sin(Time.time * shakeSpeed) * currentShakeIntensity;
+                float shakeY = Mathf.Cos(Time.time * shakeSpeed * 1.1f) * currentShakeIntensity;
+                transform.position = originalPosition + new Vector3(shakeX, shakeY, 0f);
+                
                 yield return null;
             }
 
+            // Reset position before explosion
+            transform.position = originalPosition;
+
+            // === PHASE 3: EXPLOSION + DISAPPEAR ===
+            // Hide the player
+            SetPlayerVisible(false);
+            
             // Callback for when flash is complete (spawn explosion, etc.)
             onFlashComplete?.Invoke();
 
-            // Stay frozen for the remaining duration
-            float remainingFreeze = freezeDuration - flashDuration;
-            if (remainingFreeze > 0)
-            {
-                yield return new WaitForSeconds(remainingFreeze);
-            }
+            // Wait for respawn delay (time to see the explosion)
+            yield return new WaitForSeconds(respawnDelay);
 
-            // Reset flash
+            // === PHASE 4: RESPAWN ===
+            // Move to spawn position
+            transform.position = spawnPosition;
+            
+            // Reset layer settings (in case we were on stairs when we died)
+            gameObject.layer = spawnLayer;
+            SpriteRenderer[] allRenderers = GetComponentsInChildren<SpriteRenderer>();
+            foreach (var sr in allRenderers)
+            {
+                sr.sortingLayerName = spawnSortingLayer;
+            }
+            
+            // Reset flash effect
             if (flashMaterial != null)
             {
                 flashMaterial.SetFloat("_FlashAmount", 0f);
             }
+            
+            // Show the player
+            SetPlayerVisible(true);
 
             // Unfreeze
             isFrozen = false;
+        }
+
+        private void SetPlayerVisible(bool visible)
+        {
+            // Hide/show all sprite renderers on the player
+            SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+            foreach (var sr in renderers)
+            {
+                sr.enabled = visible;
+            }
         }
     }
 }
