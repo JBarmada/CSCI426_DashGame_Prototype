@@ -44,12 +44,31 @@ namespace Cainos.PixelArtTopDown_Basic
         [Range(0f, 1f)]
         public float dashStartEffectOpacity = 0.6f;
 
+        [Header("Impact Effect")]
+        [Tooltip("Effect to spawn when hitting an object (e.g., Explosion_Yellow)")]
+        public GameObject impactEffect;
+        
+        [Tooltip("Scale of the impact effect")]
+        public float impactEffectScale = 0.5f;
+        
+        [Tooltip("Opacity of the impact effect (0-1)")]
+        [Range(0f, 1f)]
+        public float impactEffectOpacity = 0.8f;
+
         [Header("Bounce Back")]
         [Tooltip("How hard the player bounces back when hitting something")]
         public float bounceForce = 8f;
         
         [Tooltip("How long the player is stunned/bouncing after hitting something")]
         public float bounceStunDuration = 0.15f;
+
+        [Header("Dash Flash")]
+        [Tooltip("Color to tint the player during dash")]
+        public Color dashFlashColor = new Color(0.3f, 0.5f, 1f, 1f); // Light blue
+        
+        [Tooltip("Maximum intensity of the dash flash (0-1)")]
+        [Range(0f, 1f)]
+        public float dashFlashIntensity = 0.4f;
 
         [Header("Damage Flash")]
         [Tooltip("Color to flash when taking damage")]
@@ -164,6 +183,17 @@ namespace Cainos.PixelArtTopDown_Basic
             {
                 rb.linearVelocity = lastMoveDir * dashSpeed;
                 dashTimer -= Time.fixedDeltaTime;
+                
+                // Apply dash flash - fade in first half, fade out second half
+                if (flashMaterial != null && dashFlashIntensity > 0f)
+                {
+                    // Progress goes from 1 (start) to 0 (end)
+                    float progress = dashTimer / dashDuration;
+                    // Use sine wave for smooth in/out - peaks at 0.5 (middle of dash)
+                    float flashAmount = Mathf.Sin(progress * Mathf.PI) * dashFlashIntensity;
+                    flashMaterial.SetColor("_FlashColor", dashFlashColor);
+                    flashMaterial.SetFloat("_FlashAmount", flashAmount);
+                }
                 
                 // Spawn trail sprites at regular intervals
                 if (dashTrailSprite != null)
@@ -297,6 +327,13 @@ namespace Cainos.PixelArtTopDown_Basic
         {
             isDashing = false;
             rb.excludeLayers = originalExcludeLayers;
+            
+            // Reset dash flash
+            if (flashMaterial != null)
+            {
+                flashMaterial.SetFloat("_FlashAmount", 0f);
+                flashMaterial.SetColor("_FlashColor", damageFlashColor); // Restore damage color
+            }
         }
 
         private void SpawnTrailSprite()
@@ -358,6 +395,9 @@ namespace Cainos.PixelArtTopDown_Basic
                 Vector2 hitPoint = collision.contacts[0].point;
                 explodable.TriggerExplosion(hitPoint);
                 
+                // Spawn impact effect at hit point
+                SpawnImpactEffect(hitPoint);
+                
                 // Quick impact vignette flash
                 if (DamageVignette.Instance != null)
                 {
@@ -366,6 +406,67 @@ namespace Cainos.PixelArtTopDown_Basic
                 
                 // Stop the dash and bounce back
                 StartCoroutine(BounceBack(collision.contacts[0].normal));
+            }
+        }
+        
+        private void SpawnImpactEffect(Vector2 position)
+        {
+            if (impactEffect == null) return;
+            
+            GameObject effect = Instantiate(impactEffect, position, Quaternion.identity);
+            
+            // Apply scale to the root object
+            effect.transform.localScale = Vector3.one * impactEffectScale;
+            
+            // Handle all renderers (sprites) - render ABOVE player
+            foreach (var renderer in effect.GetComponentsInChildren<Renderer>())
+            {
+                if (spriteRenderer != null)
+                {
+                    renderer.sortingLayerName = spriteRenderer.sortingLayerName;
+                    renderer.sortingOrder = spriteRenderer.sortingOrder + 10; // Above player
+                }
+                
+                // Apply opacity to SpriteRenderers
+                if (renderer is SpriteRenderer sr)
+                {
+                    Color c = sr.color;
+                    sr.color = new Color(c.r, c.g, c.b, c.a * impactEffectOpacity);
+                }
+            }
+            
+            // Handle all particle systems
+            foreach (var ps in effect.GetComponentsInChildren<ParticleSystem>())
+            {
+                var main = ps.main;
+                
+                // Apply scale to particle system - modify both multiplier and base size
+                main.startSizeMultiplier *= impactEffectScale;
+                
+                // Also scale startSize directly for better small scale support
+                if (main.startSize.mode == ParticleSystemCurveMode.Constant)
+                {
+                    main.startSize = main.startSize.constant * impactEffectScale;
+                }
+                else if (main.startSize.mode == ParticleSystemCurveMode.TwoConstants)
+                {
+                    main.startSize = new ParticleSystem.MinMaxCurve(
+                        main.startSize.constantMin * impactEffectScale,
+                        main.startSize.constantMax * impactEffectScale
+                    );
+                }
+                
+                // Apply opacity to particle system's start color
+                Color startColor = main.startColor.color;
+                main.startColor = new Color(startColor.r, startColor.g, startColor.b, startColor.a * impactEffectOpacity);
+                
+                // Match sorting layer for particle renderer - ABOVE player
+                var psRenderer = ps.GetComponent<ParticleSystemRenderer>();
+                if (psRenderer != null && spriteRenderer != null)
+                {
+                    psRenderer.sortingLayerName = spriteRenderer.sortingLayerName;
+                    psRenderer.sortingOrder = spriteRenderer.sortingOrder + 10;
+                }
             }
         }
 
