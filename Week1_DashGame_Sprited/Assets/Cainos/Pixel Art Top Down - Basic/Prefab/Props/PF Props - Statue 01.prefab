@@ -163,10 +163,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamagingProp
   damageExplosionEffect: {fileID: 7403103098228120956, guid: 513099c3c135b01439895582ca4ec420,
     type: 3}
-  shakeDuration: 1
-  shakeIntensity: 0.15
-  freezeDuration: 1.2
+  initialFreezeDuration: 0.5
+  useImpactShake: 1
+  screenShakeIntensity: 0.4
+  impactShakeDuration: 0.15
   flashDuration: 1
+  characterShakeIntensity: 0.05
+  characterShakeSpeed: 50
+  respawnDelay: 1
 --- !u!1 &7947911505844789836
 GameObject:
   m_ObjectHideFlags: 0

@@ -39,7 +39,7 @@ public class DamagingProp : MonoBehaviour
 
     [Header("Phase 3: Death + Respawn")]
     [Tooltip("How long after the explosion before the player respawns (gives time to see the explosion)")]
-    public float respawnDelay = 1f;
+    public float respawnDelay = 3.0f;
 
     private bool hasTriggered = false;
 
