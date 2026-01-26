@@ -139,11 +139,20 @@ public class Explodable : MonoBehaviour
     /// Call this method to trigger the explosion from an external source (like the player).
     /// This avoids race conditions with OnCollisionEnter2D callbacks.
     /// </summary>
-    public void TriggerExplosion(Vector2 hitPoint)
+    /// <param name="hitPoint">The point of impact</param>
+    /// <param name="playerCollider">If provided, ignores collision with this collider so player can pass through (object still collides with walls)</param>
+    public void TriggerExplosion(Vector2 hitPoint, Collider2D playerCollider = null)
     {
         if (exploded) return;
 
         exploded = true;
+
+        // If a player collider is provided, ignore collision with it so player can pass through
+        // The object will still collide with walls and other environment
+        if (playerCollider != null && col != null)
+        {
+            Physics2D.IgnoreCollision(col, playerCollider, true);
+        }
 
         // Start the hitstop sequence
         StartCoroutine(HitstopSequence(hitPoint));
