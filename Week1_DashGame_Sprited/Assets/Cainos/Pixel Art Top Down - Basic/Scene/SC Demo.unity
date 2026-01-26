@@ -25958,9 +25958,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7619c79153e26f4db4dec9a213def94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cainos.PixelArtTopDown_Basic.DamageVignette
-  vignetteColor: {r: 0.8, g: 0, b: 0, a: 0.9}
-  fadeInDuration: 0.1
-  fadeOutDuration: 0.2
+  damageColor: {r: 0.8, g: 0, b: 0, a: 0.9}
+  damageFadeInDuration: 0.1
+  damageFadeOutDuration: 0.5
+  hitColor: {r: 0.4764151, g: 1, b: 0.8955581, a: 0.7}
+  hitFadeInDuration: 0.01
+  hitFadeOutDuration: 0.2
   innerRadius: 0.756
   edgeSoftness: 0.5
 --- !u!4 &1244604989

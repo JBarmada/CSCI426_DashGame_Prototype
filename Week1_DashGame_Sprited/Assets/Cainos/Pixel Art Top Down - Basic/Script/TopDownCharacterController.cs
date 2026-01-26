@@ -208,6 +208,12 @@ namespace Cainos.PixelArtTopDown_Basic
                 Vector2 hitPoint = collision.contacts[0].point;
                 explodable.TriggerExplosion(hitPoint);
                 
+                // Quick impact vignette flash
+                if (DamageVignette.Instance != null)
+                {
+                    DamageVignette.Instance.Flash();
+                }
+                
                 // Stop the dash and bounce back
                 StartCoroutine(BounceBack(collision.contacts[0].normal));
             }

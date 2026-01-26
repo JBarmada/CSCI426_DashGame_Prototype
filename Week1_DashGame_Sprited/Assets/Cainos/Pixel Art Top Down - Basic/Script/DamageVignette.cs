@@ -11,16 +11,27 @@ namespace Cainos.PixelArtTopDown_Basic
     {
         public static DamageVignette Instance { get; private set; }
 
-        [Header("Vignette Settings")]
-        [Tooltip("Color of the vignette (usually red)")]
-        public Color vignetteColor = new Color(0.8f, 0f, 0f, 0.9f);
+        [Header("Damage Vignette (Negative - Pillars)")]
+        [Tooltip("Color for damage/negative effects (usually red)")]
+        public Color damageColor = new Color(0.8f, 0f, 0f, 0.9f);
         
-        [Tooltip("How quickly the vignette fades in (seconds)")]
-        public float fadeInDuration = 0.1f;
+        [Tooltip("How quickly the damage vignette fades in (seconds)")]
+        public float damageFadeInDuration = 0.1f;
         
-        [Tooltip("How quickly the vignette fades out (seconds)")]
-        public float fadeOutDuration = 0.5f;
+        [Tooltip("How quickly the damage vignette fades out (seconds)")]
+        public float damageFadeOutDuration = 0.5f;
+
+        [Header("Hit Vignette (Positive - Boxes/Pots)")]
+        [Tooltip("Color for hit/positive effects (e.g., white, yellow, or light blue)")]
+        public Color hitColor = new Color(1f, 1f, 1f, 0.7f);
         
+        [Tooltip("How quickly the hit vignette fades in (seconds, 0 = instant)")]
+        public float hitFadeInDuration = 0f;
+        
+        [Tooltip("How quickly the hit vignette fades out (seconds)")]
+        public float hitFadeOutDuration = 0.1f;
+        
+        [Header("Shape Settings")]
         [Tooltip("Size of the transparent center (0-1, larger = more visibility in center)")]
         [Range(0f, 0.8f)]
         public float innerRadius = 0.4f;
@@ -31,12 +42,13 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private Texture2D vignetteTexture;
         private float currentAlpha = 0f;
-        private float targetAlpha = 0f;
+        private Color currentColor;
         private Coroutine fadeCoroutine;
 
         private void Awake()
         {
             Instance = this;
+            currentColor = damageColor;
             GenerateVignetteTexture();
         }
 
@@ -73,12 +85,8 @@ namespace Cainos.PixelArtTopDown_Basic
                         alpha = alpha * alpha; // Quadratic ease-in
                     }
                     
-                    pixels[y * textureSize + x] = new Color(
-                        vignetteColor.r,
-                        vignetteColor.g,
-                        vignetteColor.b,
-                        alpha * vignetteColor.a
-                    );
+                    // Use white - we'll tint it with GUI.color at render time
+                    pixels[y * textureSize + x] = new Color(1f, 1f, 1f, alpha);
                 }
             }
             
@@ -90,8 +98,8 @@ namespace Cainos.PixelArtTopDown_Basic
         {
             if (currentAlpha <= 0f || vignetteTexture == null) return;
             
-            // Set the GUI color with current alpha
-            GUI.color = new Color(1f, 1f, 1f, currentAlpha);
+            // Set the GUI color with current color and alpha
+            GUI.color = new Color(currentColor.r, currentColor.g, currentColor.b, currentAlpha * currentColor.a);
             
             // Draw the vignette texture to fill the entire screen
             GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), vignetteTexture, ScaleMode.StretchToFill);
@@ -101,25 +109,26 @@ namespace Cainos.PixelArtTopDown_Basic
         }
 
         /// <summary>
-        /// Show the vignette with a quick fade in
+        /// Show the vignette with a fade in (uses damage color)
         /// </summary>
         public void Show()
         {
             if (fadeCoroutine != null)
                 StopCoroutine(fadeCoroutine);
             
-            fadeCoroutine = StartCoroutine(FadeTo(1f, fadeInDuration));
+            currentColor = damageColor;
+            fadeCoroutine = StartCoroutine(FadeTo(1f, damageFadeInDuration));
         }
 
         /// <summary>
-        /// Hide the vignette with a fade out
+        /// Hide the vignette with a fade out (uses damage fade out)
         /// </summary>
         public void Hide()
         {
             if (fadeCoroutine != null)
                 StopCoroutine(fadeCoroutine);
             
-            fadeCoroutine = StartCoroutine(FadeTo(0f, fadeOutDuration));
+            fadeCoroutine = StartCoroutine(FadeTo(0f, damageFadeOutDuration));
         }
 
         /// <summary>
@@ -140,6 +149,58 @@ namespace Cainos.PixelArtTopDown_Basic
         {
             if (fadeCoroutine != null)
                 StopCoroutine(fadeCoroutine);
+            
+            currentAlpha = 0f;
+        }
+
+        /// <summary>
+        /// Quick impact flash for positive feedback (destroying objects).
+        /// Uses hit color and hit fade settings from Inspector.
+        /// </summary>
+        public void Flash()
+        {
+            if (fadeCoroutine != null)
+                StopCoroutine(fadeCoroutine);
+            
+            currentColor = hitColor;
+            fadeCoroutine = StartCoroutine(DoFlash(hitFadeInDuration, hitFadeOutDuration));
+        }
+
+        /// <summary>
+        /// Quick impact flash with a custom color.
+        /// </summary>
+        public void Flash(Color color)
+        {
+            if (fadeCoroutine != null)
+                StopCoroutine(fadeCoroutine);
+            
+            currentColor = color;
+            fadeCoroutine = StartCoroutine(DoFlash(hitFadeInDuration, hitFadeOutDuration));
+        }
+
+        private IEnumerator DoFlash(float fadeInTime, float fadeOutTime)
+        {
+            // Fade in (or instant if fadeInTime is 0)
+            if (fadeInTime > 0f)
+            {
+                float elapsed = 0f;
+                while (elapsed < fadeInTime)
+                {
+                    elapsed += Time.deltaTime;
+                    currentAlpha = Mathf.Lerp(0f, 1f, elapsed / fadeInTime);
+                    yield return null;
+                }
+            }
+            currentAlpha = 1f;
+            
+            // Fade out
+            float elapsedOut = 0f;
+            while (elapsedOut < fadeOutTime)
+            {
+                elapsedOut += Time.deltaTime;
+                currentAlpha = Mathf.Lerp(1f, 0f, elapsedOut / fadeOutTime);
+                yield return null;
+            }
             
             currentAlpha = 0f;
         }
