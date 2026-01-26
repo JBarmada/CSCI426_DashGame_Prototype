@@ -25961,7 +25961,7 @@ MonoBehaviour:
   vignetteColor: {r: 0.8, g: 0, b: 0, a: 0.9}
   fadeInDuration: 0.1
   fadeOutDuration: 0.2
-  innerRadius: 0.56
+  innerRadius: 0.756
   edgeSoftness: 0.5
 --- !u!4 &1244604989
 Transform:
@@ -36848,6 +36848,11 @@ PrefabInstance:
         type: 3}
       propertyPath: dashSpeed
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628018141983903119, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
+        type: 3}
+      propertyPath: bounceForce
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
