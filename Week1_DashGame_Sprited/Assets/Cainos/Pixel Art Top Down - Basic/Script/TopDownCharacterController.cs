@@ -14,6 +14,36 @@ namespace Cainos.PixelArtTopDown_Basic
         public float dashDuration = 0.15f;
         public float dashCooldown = 0.4f;
 
+        [Header("Dash Trail")]
+        [Tooltip("Sprite to spawn as trail during dash (e.g., rune glow sprite)")]
+        public Sprite dashTrailSprite;
+        
+        [Tooltip("How many runes to spawn per second during dash")]
+        public float trailSpawnRate = 30f;
+        
+        [Tooltip("How long each trail rune stays visible")]
+        public float trailFadeDuration = 0.3f;
+        
+        [Tooltip("Scale of the trail sprites (height/length)")]
+        public float trailScale = 1f;
+        
+        [Tooltip("Width multiplier for the trail sprites (1 = normal, 2 = twice as wide)")]
+        public float trailWidthScale = 1f;
+        
+        [Tooltip("Offset for trail sorting order relative to player (negative = behind player)")]
+        public int trailSortingOrderOffset = -1;
+
+        [Header("Dash Start Effect")]
+        [Tooltip("Effect to spawn when dash starts (e.g., Explosion_Blue)")]
+        public GameObject dashStartEffect;
+        
+        [Tooltip("Scale of the dash start effect")]
+        public float dashStartEffectScale = 0.5f;
+        
+        [Tooltip("Opacity of the dash start effect (0-1)")]
+        [Range(0f, 1f)]
+        public float dashStartEffectOpacity = 0.6f;
+
         [Header("Bounce Back")]
         [Tooltip("How hard the player bounces back when hitting something")]
         public float bounceForce = 8f;
@@ -41,6 +71,7 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private float dashTimer;
         private float dashCooldownTimer;
+        private float trailSpawnTimer;
         
         private LayerMask originalExcludeLayers;
         
@@ -133,6 +164,17 @@ namespace Cainos.PixelArtTopDown_Basic
             {
                 rb.linearVelocity = lastMoveDir * dashSpeed;
                 dashTimer -= Time.fixedDeltaTime;
+                
+                // Spawn trail sprites at regular intervals
+                if (dashTrailSprite != null)
+                {
+                    trailSpawnTimer -= Time.fixedDeltaTime;
+                    if (trailSpawnTimer <= 0f)
+                    {
+                        SpawnTrailSprite();
+                        trailSpawnTimer = 1f / trailSpawnRate;
+                    }
+                }
 
                 if (dashTimer <= 0)
                 {
@@ -185,14 +227,122 @@ namespace Cainos.PixelArtTopDown_Basic
             isDashing = true;
             dashTimer = dashDuration;
             dashCooldownTimer = dashCooldown;
+            trailSpawnTimer = 0f; // Spawn first trail immediately
             animator.SetBool("IsMoving", false);
             rb.excludeLayers = LayerMask.GetMask("Enemy");
+            
+            // Spawn dash start effect
+            if (dashStartEffect != null)
+            {
+                GameObject effect = Instantiate(dashStartEffect, transform.position, Quaternion.identity);
+                
+                // Apply scale to the root object
+                effect.transform.localScale = Vector3.one * dashStartEffectScale;
+                
+                // Handle all renderers (sprites)
+                foreach (var renderer in effect.GetComponentsInChildren<Renderer>())
+                {
+                    // Match player's sorting layer, render BEHIND player
+                    if (spriteRenderer != null)
+                    {
+                        renderer.sortingLayerName = spriteRenderer.sortingLayerName;
+                        renderer.sortingOrder = spriteRenderer.sortingOrder - 1;
+                    }
+                    
+                    // Apply opacity to SpriteRenderers
+                    if (renderer is SpriteRenderer sr)
+                    {
+                        Color c = sr.color;
+                        sr.color = new Color(c.r, c.g, c.b, c.a * dashStartEffectOpacity);
+                    }
+                }
+                
+                // Handle all particle systems
+                foreach (var ps in effect.GetComponentsInChildren<ParticleSystem>())
+                {
+                    var main = ps.main;
+                    
+                    // Apply scale to particle system - modify both multiplier and base size
+                    main.startSizeMultiplier *= dashStartEffectScale;
+                    
+                    // Also scale startSize directly for better small scale support
+                    if (main.startSize.mode == ParticleSystemCurveMode.Constant)
+                    {
+                        main.startSize = main.startSize.constant * dashStartEffectScale;
+                    }
+                    else if (main.startSize.mode == ParticleSystemCurveMode.TwoConstants)
+                    {
+                        main.startSize = new ParticleSystem.MinMaxCurve(
+                            main.startSize.constantMin * dashStartEffectScale,
+                            main.startSize.constantMax * dashStartEffectScale
+                        );
+                    }
+                    
+                    // Apply opacity to particle system's start color
+                    Color startColor = main.startColor.color;
+                    main.startColor = new Color(startColor.r, startColor.g, startColor.b, startColor.a * dashStartEffectOpacity);
+                    
+                    // Match sorting layer for particle renderer
+                    var psRenderer = ps.GetComponent<ParticleSystemRenderer>();
+                    if (psRenderer != null && spriteRenderer != null)
+                    {
+                        psRenderer.sortingLayerName = spriteRenderer.sortingLayerName;
+                        psRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
+                    }
+                }
+            }
         }
 
         private void EndDash()
         {
             isDashing = false;
             rb.excludeLayers = originalExcludeLayers;
+        }
+
+        private void SpawnTrailSprite()
+        {
+            // Create a new GameObject for the trail sprite
+            GameObject trailObj = new GameObject("DashTrail");
+            trailObj.transform.position = transform.position;
+            // X = width (perpendicular to direction), Y = height (along direction)
+            trailObj.transform.localScale = new Vector3(trailScale * trailWidthScale, trailScale, 1f);
+            
+            // Calculate rotation based on dash direction
+            // The rune sprite is vertical by default (up/down = 0 degrees)
+            // Atan2 gives angle from positive X axis, so we need to adjust
+            // Up (0,1) should be 0°, Right (1,0) should be 90°, etc.
+            float angle = Mathf.Atan2(lastMoveDir.x, lastMoveDir.y) * Mathf.Rad2Deg;
+            trailObj.transform.rotation = Quaternion.Euler(0f, 0f, -angle);
+            
+            // Add SpriteRenderer and configure it
+            SpriteRenderer sr = trailObj.AddComponent<SpriteRenderer>();
+            sr.sprite = dashTrailSprite;
+            
+            // Use the player's current sorting layer (follows player up/down stairs)
+            if (spriteRenderer != null)
+            {
+                sr.sortingLayerName = spriteRenderer.sortingLayerName;
+                sr.sortingOrder = spriteRenderer.sortingOrder + trailSortingOrderOffset;
+            }
+            
+            // Start the fade coroutine
+            StartCoroutine(FadeAndDestroyTrail(trailObj, sr));
+        }
+
+        private IEnumerator FadeAndDestroyTrail(GameObject trailObj, SpriteRenderer sr)
+        {
+            float elapsed = 0f;
+            Color startColor = sr.color;
+            
+            while (elapsed < trailFadeDuration)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(1f, 0f, elapsed / trailFadeDuration);
+                sr.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+                yield return null;
+            }
+            
+            Destroy(trailObj);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
