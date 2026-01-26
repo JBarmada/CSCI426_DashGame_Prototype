@@ -9,6 +9,8 @@ namespace Cainos.PixelArtTopDown_Basic
         [Header("Audio")]
         [SerializeField] private AudioClip[] walkAudios;
         [SerializeField] private AudioClip dashSound;
+        [SerializeField] private AudioClip deathSound;
+        [SerializeField] private AudioClip hitSound;
         [SerializeField] private float footstepInterval = 0.5f;
         [Header("Movement")]
         public float speed = 5f;
@@ -554,6 +556,9 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private IEnumerator DamageSequence(float initialFreezeDuration, float flashDuration, float shakeIntensity, float shakeSpeed, float respawnDelay, System.Action onFlashComplete)
         {
+            if (SoundFXManager.Instance != null && hitSound != null)
+                SoundFXManager.Instance.PlaySound(hitSound, transform, 1f);
+
             StopFootsteps();
 
             // End any current dash
@@ -611,6 +616,9 @@ namespace Cainos.PixelArtTopDown_Basic
             transform.position = originalPosition;
 
             // === PHASE 3: EXPLOSION + DISAPPEAR ===
+            if (SoundFXManager.Instance != null && deathSound != null)
+                SoundFXManager.Instance.PlaySound(deathSound, transform, 1f);
+
             // Hide the player
             SetPlayerVisible(false);
             

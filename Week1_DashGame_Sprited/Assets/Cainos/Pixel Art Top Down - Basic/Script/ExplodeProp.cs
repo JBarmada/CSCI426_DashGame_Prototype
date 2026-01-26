@@ -7,6 +7,7 @@ public class Explodable : MonoBehaviour
     [Header("Explosion Settings")]
     public float explosionForce = 8f;
     public GameObject explosionEffect;
+    public AudioClip breakSound;
 
     [Header("Hitstop Settings")]
     [Tooltip("How long the object gets pushed before freezing")]
@@ -219,6 +220,9 @@ public class Explodable : MonoBehaviour
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
+
+        if (SoundFXManager.Instance != null && breakSound != null)
+            SoundFXManager.Instance.PlaySound(breakSound, transform, 1f);
 
         Destroy(gameObject);
     }
