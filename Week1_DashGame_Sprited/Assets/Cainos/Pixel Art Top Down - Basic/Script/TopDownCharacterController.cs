@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -21,8 +21,14 @@ namespace Cainos.PixelArtTopDown_Basic
         [Tooltip("How long the player is stunned/bouncing after hitting something")]
         public float bounceStunDuration = 0.15f;
 
+        [Header("Damage Flash")]
+        [Tooltip("Color to flash when taking damage")]
+        public Color damageFlashColor = Color.red;
+
         private Rigidbody2D rb;
         private Animator animator;
+        private SpriteRenderer spriteRenderer;
+        private Material flashMaterial;
 
         private Vector2 moveDir;
         private Vector2 lastMoveDir = Vector2.down;
@@ -30,6 +36,7 @@ namespace Cainos.PixelArtTopDown_Basic
         public bool IsDashing => isDashing;
         private bool isDashing;
         private bool isBouncing;
+        private bool isFrozen;
 
         private float dashTimer;
         private float dashCooldownTimer;
@@ -41,6 +48,33 @@ namespace Cainos.PixelArtTopDown_Basic
             rb = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
             originalExcludeLayers = rb.excludeLayers;
+            
+            // Set up flash material for damage effect
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            
+            SetupFlashMaterial();
+        }
+
+        private void SetupFlashMaterial()
+        {
+            if (spriteRenderer == null) return;
+            
+            Shader flashShader = Shader.Find("Custom/SpriteFlash");
+            if (flashShader != null)
+            {
+                flashMaterial = new Material(flashShader);
+                flashMaterial.SetColor("_FlashColor", damageFlashColor);
+                flashMaterial.SetFloat("_FlashAmount", 0f);
+                
+                if (spriteRenderer.sprite != null && spriteRenderer.sprite.texture != null)
+                {
+                    flashMaterial.mainTexture = spriteRenderer.sprite.texture;
+                }
+                
+                spriteRenderer.material = flashMaterial;
+            }
         }
 
         private void Update()
@@ -51,6 +85,9 @@ namespace Cainos.PixelArtTopDown_Basic
                 ResetScene();
                 return;
             }
+
+            // Don't allow any input while frozen
+            if (isFrozen) return;
 
             // Cooldown timer
             if (dashCooldownTimer > 0)
@@ -71,6 +108,13 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void FixedUpdate()
         {
+            // No movement while frozen
+            if (isFrozen)
+            {
+                rb.linearVelocity = Vector2.zero;
+                return;
+            }
+            
             if (isDashing)
             {
                 rb.linearVelocity = lastMoveDir * dashSpeed;
@@ -182,6 +226,64 @@ namespace Cainos.PixelArtTopDown_Basic
             // Reload the current scene to reset everything
             Scene currentScene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(currentScene.name);
+        }
+
+        /// <summary>
+        /// Called when the player hits a damaging object.
+        /// Freezes the player and plays the red flash effect.
+        /// </summary>
+        public void TakeDamage(float freezeDuration, float flashDuration, System.Action onFlashComplete)
+        {
+            if (isFrozen) return; // Already taking damage
+            
+            StartCoroutine(DamageSequence(freezeDuration, flashDuration, onFlashComplete));
+        }
+
+        private IEnumerator DamageSequence(float freezeDuration, float flashDuration, System.Action onFlashComplete)
+        {
+            // End any current dash
+            if (isDashing)
+                EndDash();
+            
+            // Freeze the player
+            isFrozen = true;
+            isBouncing = false;
+            rb.linearVelocity = Vector2.zero;
+            animator.SetBool("IsMoving", false);
+
+            // Gradually flash to red
+            float elapsed = 0f;
+            while (elapsed < flashDuration)
+            {
+                elapsed += Time.deltaTime;
+                float progress = elapsed / flashDuration;
+                
+                if (flashMaterial != null)
+                {
+                    flashMaterial.SetFloat("_FlashAmount", progress);
+                }
+                
+                yield return null;
+            }
+
+            // Callback for when flash is complete (spawn explosion, etc.)
+            onFlashComplete?.Invoke();
+
+            // Stay frozen for the remaining duration
+            float remainingFreeze = freezeDuration - flashDuration;
+            if (remainingFreeze > 0)
+            {
+                yield return new WaitForSeconds(remainingFreeze);
+            }
+
+            // Reset flash
+            if (flashMaterial != null)
+            {
+                flashMaterial.SetFloat("_FlashAmount", 0f);
+            }
+
+            // Unfreeze
+            isFrozen = false;
         }
     }
 }
