@@ -5,7 +5,11 @@ using System.Collections;
 namespace Cainos.PixelArtTopDown_Basic
 {
     public class TopDownCharacterController : MonoBehaviour
-    {
+    {   
+        [Header("Audio")]
+        [SerializeField] private AudioClip[] walkAudios;
+        [SerializeField] private AudioClip dashSound;
+        [SerializeField] private float footstepInterval = 0.5f;
         [Header("Movement")]
         public float speed = 5f;
 
@@ -13,6 +17,7 @@ namespace Cainos.PixelArtTopDown_Basic
         public float dashSpeed = 15f;
         public float dashDuration = 0.15f;
         public float dashCooldown = 0.4f;
+        
 
         [Header("Dash Trail")]
         [Tooltip("Sprite to spawn as trail during dash (e.g., rune glow sprite)")]
@@ -91,6 +96,8 @@ namespace Cainos.PixelArtTopDown_Basic
         private float dashTimer;
         private float dashCooldownTimer;
         private float trailSpawnTimer;
+        private float footstepTimer;
+        private AudioSource currentFootstepSource;
         
         private LayerMask originalExcludeLayers;
         
@@ -161,6 +168,7 @@ namespace Cainos.PixelArtTopDown_Basic
             if (!isDashing && !isBouncing)
             {
                 HandleMovementInput();
+                HandleFootsteps();
             }
 
             // Dash input
@@ -252,15 +260,46 @@ namespace Cainos.PixelArtTopDown_Basic
             animator.SetBool("IsMoving", moveDir != Vector2.zero);
         }
 
+        private void HandleFootsteps()
+        {
+            if (moveDir != Vector2.zero)
+            {
+                footstepTimer -= Time.deltaTime;
+                if (footstepTimer <= 0)
+                {
+                    if (walkAudios != null && walkAudios.Length > 0)
+                    {
+                        currentFootstepSource = SoundFXManager.Instance.PlayRandomSound(walkAudios, transform, 1f);
+                    }
+                    footstepTimer = footstepInterval;
+                }
+            }
+            else
+            {
+                footstepTimer = 0;
+            }
+        }
+
+        private void StopFootsteps()
+        {
+            if (currentFootstepSource != null)
+            {
+                currentFootstepSource.Stop();
+                Destroy(currentFootstepSource.gameObject);
+                currentFootstepSource = null;
+            }
+        }
+
         private void StartDash()
         {
+            StopFootsteps();
             isDashing = true;
             dashTimer = dashDuration;
             dashCooldownTimer = dashCooldown;
             trailSpawnTimer = 0f; // Spawn first trail immediately
             animator.SetBool("IsMoving", false);
             rb.excludeLayers = LayerMask.GetMask("Enemy");
-            
+            SoundFXManager.Instance.PlaySound(dashSound, transform, 1f);
             // Spawn dash start effect
             if (dashStartEffect != null)
             {
@@ -515,6 +554,8 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private IEnumerator DamageSequence(float initialFreezeDuration, float flashDuration, float shakeIntensity, float shakeSpeed, float respawnDelay, System.Action onFlashComplete)
         {
+            StopFootsteps();
+
             // End any current dash
             if (isDashing)
                 EndDash();
