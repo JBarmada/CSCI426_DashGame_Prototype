@@ -15,6 +15,9 @@ public class DamagingProp : MonoBehaviour
     public GameObject damageExplosionEffect;
     [Tooltip("Sound to play when the player hits this prop")]
     public AudioClip[] hitSound;
+    
+    [Tooltip("Volume of the hit sound")]
+    [Range(0f, 1f)] public float hitSoundVolume = 0.7f;
 
     [Header("Phase 1: Initial Freeze + Screen Shake")]
     [Tooltip("How long the player is completely frozen (animation stops)")]
@@ -62,7 +65,7 @@ public class DamagingProp : MonoBehaviour
         // Play hit sound
         if (SoundFXManager.Instance != null && hitSound != null)
         {
-            SoundFXManager.Instance.PlayRandomSound(hitSound, transform, 0.7f);
+            SoundFXManager.Instance.PlayRandomSound(hitSound, transform, hitSoundVolume);
         }
 
         // Start screen shake (only during initial freeze phase)
