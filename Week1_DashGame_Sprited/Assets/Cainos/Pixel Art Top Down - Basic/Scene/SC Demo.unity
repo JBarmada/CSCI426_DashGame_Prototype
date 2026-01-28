@@ -4859,6 +4859,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -5052,6 +5057,7 @@ GameObject:
   m_Component:
   - component: {fileID: 258387986}
   - component: {fileID: 258387985}
+  - component: {fileID: 258387987}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -5098,6 +5104,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &258387987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258387984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e14602880b7443545b58aba509aa5ad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cainos.PixelArtTopDown_Basic.PauseMenu
+  panelColor: {r: 0.1, g: 0.1, b: 0.12, a: 0.9}
+  buttonColor: {r: 0.2, g: 0.2, b: 0.25, a: 1}
+  buttonHoverColor: {r: 0.3, g: 0.3, b: 0.4, a: 1}
+  sliderBackgroundColor: {r: 0.15, g: 0.15, b: 0.2, a: 1}
+  sliderFillColor: {r: 0.4, g: 0.6, b: 0.9, a: 1}
+  textColor: {r: 0.95, g: 0.95, b: 0.95, a: 1}
+  labelColor: {r: 0.7, g: 0.85, b: 1, a: 1}
+  panelWidth: 200
+  panelHeight: 120
+  buttonWidth: 150
+  buttonHeight: 40
+  sliderWidth: 150
+  sliderHeight: 20
+  fontSize: 18
+  titleFontSize: 22
+  labelFontSize: 14
 --- !u!1001 &258539806
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5718,7 +5752,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -10884,6 +10918,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6940799994644413278, guid: d730038d263986f4dac93230e1dd62b0,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -6940799994644413278, guid: d730038d263986f4dac93230e1dd62b0,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -11959,6 +11998,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
@@ -13488,6 +13532,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -13662,6 +13711,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -13694,6 +13748,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161447339}
     m_Modifications:
+    - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
         type: 3}
       propertyPath: hitSound.Array.size
@@ -14341,6 +14400,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -14460,7 +14524,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -15277,7 +15341,7 @@ MonoBehaviour:
   explosionForce: 8
   explosionEffect: {fileID: 0}
   breakSounds: []
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -15830,6 +15894,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -16031,6 +16100,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayerID
       value: -105541197
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
@@ -16237,7 +16311,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -17666,6 +17740,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayerID
       value: -105541197
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
@@ -19130,7 +19209,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 369acc1af03e56446bc9866d9182e3e7, type: 3}
   - {fileID: 8300000, guid: e62453f13f8fdfb4791e74f04de0a5e2, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -19467,6 +19546,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -19682,7 +19766,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 369acc1af03e56446bc9866d9182e3e7, type: 3}
   - {fileID: 8300000, guid: e62453f13f8fdfb4791e74f04de0a5e2, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -28007,6 +28091,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -29526,7 +29615,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -30731,6 +30820,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -5706599637641167254, guid: 41ea6afb203377e42995d7d016ea5907,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -31249,6 +31343,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
@@ -32953,6 +33052,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
       propertyPath: hitSound.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -33494,7 +33598,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 369acc1af03e56446bc9866d9182e3e7, type: 3}
   - {fileID: 8300000, guid: e62453f13f8fdfb4791e74f04de0a5e2, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -33611,7 +33715,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -33713,6 +33817,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayerID
       value: -105541197
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8466789425447563084, guid: 84395be60ff2def43bb58fa039614eab,
         type: 3}
@@ -33922,7 +34031,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -36297,7 +36406,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 369acc1af03e56446bc9866d9182e3e7, type: 3}
   - {fileID: 8300000, guid: e62453f13f8fdfb4791e74f04de0a5e2, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -36389,6 +36498,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161447339}
     m_Modifications:
+    - target: {fileID: -5244549114916045324, guid: 4fad9c4de6b725a43bb1200ed9479c08,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: -5244549114916045324, guid: 4fad9c4de6b725a43bb1200ed9479c08,
         type: 3}
       propertyPath: hitSound.Array.size
@@ -36716,7 +36830,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 6d109cae5872f4345a7953b218fd746c, type: 3}
   - {fileID: 8300000, guid: 5adefa7e661920740b16170a08c9366e, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -36893,7 +37007,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 369acc1af03e56446bc9866d9182e3e7, type: 3}
   - {fileID: 8300000, guid: e62453f13f8fdfb4791e74f04de0a5e2, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -37372,7 +37486,7 @@ MonoBehaviour:
   breakSounds:
   - {fileID: 8300000, guid: 369acc1af03e56446bc9866d9182e3e7, type: 3}
   - {fileID: 8300000, guid: e62453f13f8fdfb4791e74f04de0a5e2, type: 3}
-  explosionVolume: 0.303
+  explosionVolume: 0.2
   hitSound: {fileID: 8300000, guid: 9c0665bf4d7f4f14eb93cafd19420436, type: 3}
   hitSoundStart: 0
   hitSoundDuration: 0.5
@@ -37390,6 +37504,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161447339}
     m_Modifications:
+    - target: {fileID: -2388592504008118961, guid: 6d6991dbbdeecb1488bbf78c063d1235,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: -2388592504008118961, guid: 6d6991dbbdeecb1488bbf78c063d1235,
         type: 3}
       propertyPath: hitSound.Array.size
@@ -37635,12 +37754,12 @@ PrefabInstance:
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.03
+      value: 5.74
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.4
+      value: 2.34
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
@@ -37701,6 +37820,11 @@ PrefabInstance:
         type: 3}
       propertyPath: dashSpeed
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628018141983903119, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
+        type: 3}
+      propertyPath: dashVolume
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903119, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
@@ -38547,6 +38671,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 161447339}
     m_Modifications:
+    - target: {fileID: -2340880615085349455, guid: 8728cc48d2747494893fd60426c06f6e,
+        type: 3}
+      propertyPath: hitSoundVolume
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: -2340880615085349455, guid: 8728cc48d2747494893fd60426c06f6e,
         type: 3}
       propertyPath: hitSound.Array.size
