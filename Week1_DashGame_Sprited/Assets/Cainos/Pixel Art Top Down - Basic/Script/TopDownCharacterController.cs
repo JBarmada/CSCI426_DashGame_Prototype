@@ -63,6 +63,9 @@ namespace Cainos.PixelArtTopDown_Basic
         public float impactEffectOpacity = 0.8f;
 
         [Header("Bounce Back")]
+        [Tooltip("If enabled, player bounces back when hitting something. If disabled, player continues through.")]
+        public bool enableBounceBack = true;
+        
         [Tooltip("How hard the player bounces back when hitting something")]
         public float bounceForce = 8f;
         
@@ -84,6 +87,7 @@ namespace Cainos.PixelArtTopDown_Basic
         private Rigidbody2D rb;
         private Animator animator;
         private SpriteRenderer spriteRenderer;
+        private Collider2D playerCollider;
         private Material flashMaterial;
 
         private Vector2 moveDir;
@@ -112,6 +116,7 @@ namespace Cainos.PixelArtTopDown_Basic
         {
             rb = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
+            playerCollider = GetComponent<Collider2D>();
             originalExcludeLayers = rb.excludeLayers;
             
             // Store initial spawn position and layer settings
@@ -433,8 +438,9 @@ namespace Cainos.PixelArtTopDown_Basic
             if (explodable != null && !explodable.HasExploded)
             {
                 // Trigger the explosion BEFORE ending the dash (avoids race condition)
+                // If bounce is disabled, pass player collider so player can pass through (object still hits walls)
                 Vector2 hitPoint = collision.contacts[0].point;
-                explodable.TriggerExplosion(hitPoint);
+                explodable.TriggerExplosion(hitPoint, enableBounceBack ? null : playerCollider);
                 
                 // Spawn impact effect at hit point
                 SpawnImpactEffect(hitPoint);
@@ -445,8 +451,12 @@ namespace Cainos.PixelArtTopDown_Basic
                     DamageVignette.Instance.Flash();
                 }
                 
-                // Stop the dash and bounce back
-                StartCoroutine(BounceBack(collision.contacts[0].normal));
+                // Either bounce back or continue through
+                if (enableBounceBack)
+                {
+                    StartCoroutine(BounceBack(collision.contacts[0].normal));
+                }
+                // If bounce is disabled, player just continues their dash through the object
             }
         }
         
