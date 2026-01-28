@@ -5,7 +5,15 @@ using System.Collections;
 namespace Cainos.PixelArtTopDown_Basic
 {
     public class TopDownCharacterController : MonoBehaviour
-    {
+    {   
+        [Header("Audio")]
+        [SerializeField] private AudioClip[] walkAudios;
+        [Range(0f, 1f)] public float walkVolume = 0.5f;
+        [SerializeField] private AudioClip dashSound;
+        [Range(0f, 1f)] public float dashVolume = 0.5f;
+        [SerializeField] private AudioClip deathSound;
+        [SerializeField] private AudioClip hitSound;
+        [SerializeField] private float footstepInterval = 0.5f;
         [Header("Movement")]
         public float speed = 5f;
 
@@ -13,6 +21,7 @@ namespace Cainos.PixelArtTopDown_Basic
         public float dashSpeed = 15f;
         public float dashDuration = 0.15f;
         public float dashCooldown = 0.4f;
+        
 
         [Header("Dash Trail")]
         [Tooltip("Sprite to spawn as trail during dash (e.g., rune glow sprite)")]
@@ -56,6 +65,9 @@ namespace Cainos.PixelArtTopDown_Basic
         public float impactEffectOpacity = 0.8f;
 
         [Header("Bounce Back")]
+        [Tooltip("If enabled, player bounces back when hitting something. If disabled, player continues through.")]
+        public bool enableBounceBack = true;
+        
         [Tooltip("How hard the player bounces back when hitting something")]
         public float bounceForce = 8f;
         
@@ -77,6 +89,7 @@ namespace Cainos.PixelArtTopDown_Basic
         private Rigidbody2D rb;
         private Animator animator;
         private SpriteRenderer spriteRenderer;
+        private Collider2D playerCollider;
         private Material flashMaterial;
 
         private Vector2 moveDir;
@@ -91,6 +104,8 @@ namespace Cainos.PixelArtTopDown_Basic
         private float dashTimer;
         private float dashCooldownTimer;
         private float trailSpawnTimer;
+        private float footstepTimer;
+        private AudioSource currentFootstepSource;
         
         private LayerMask originalExcludeLayers;
         
@@ -103,6 +118,7 @@ namespace Cainos.PixelArtTopDown_Basic
         {
             rb = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
+            playerCollider = GetComponent<Collider2D>();
             originalExcludeLayers = rb.excludeLayers;
             
             // Store initial spawn position and layer settings
@@ -161,6 +177,7 @@ namespace Cainos.PixelArtTopDown_Basic
             if (!isDashing && !isBouncing)
             {
                 HandleMovementInput();
+                HandleFootsteps();
             }
 
             // Dash input
@@ -252,14 +269,47 @@ namespace Cainos.PixelArtTopDown_Basic
             animator.SetBool("IsMoving", moveDir != Vector2.zero);
         }
 
+        private void HandleFootsteps()
+        {
+            if (moveDir != Vector2.zero)
+            {
+                footstepTimer -= Time.deltaTime;
+                if (footstepTimer <= 0)
+                {
+                    if (walkAudios != null && walkAudios.Length > 0)
+                    {
+                        currentFootstepSource = SoundFXManager.Instance.PlayRandomSound(walkAudios, transform, walkVolume);
+                    }
+                    footstepTimer = footstepInterval;
+                }
+            }
+            else
+            {
+                footstepTimer = 0;
+            }
+        }
+
+        private void StopFootsteps()
+        {
+            if (currentFootstepSource != null)
+            {
+                currentFootstepSource.Stop();
+                Destroy(currentFootstepSource.gameObject);
+                currentFootstepSource = null;
+            }
+        }
+
         private void StartDash()
         {
+            StopFootsteps();
             isDashing = true;
             dashTimer = dashDuration;
             dashCooldownTimer = dashCooldown;
             trailSpawnTimer = 0f; // Spawn first trail immediately
             animator.SetBool("IsMoving", false);
             rb.excludeLayers = LayerMask.GetMask("Enemy");
+            if (SoundFXManager.Instance != null && dashSound != null)
+                SoundFXManager.Instance.PlaySound(dashSound, transform, dashVolume);
             
             // Spawn dash start effect
             if (dashStartEffect != null)
@@ -392,8 +442,9 @@ namespace Cainos.PixelArtTopDown_Basic
             if (explodable != null && !explodable.HasExploded)
             {
                 // Trigger the explosion BEFORE ending the dash (avoids race condition)
+                // If bounce is disabled, pass player collider so player can pass through (object still hits walls)
                 Vector2 hitPoint = collision.contacts[0].point;
-                explodable.TriggerExplosion(hitPoint);
+                explodable.TriggerExplosion(hitPoint, enableBounceBack ? null : playerCollider);
                 
                 // Spawn impact effect at hit point
                 SpawnImpactEffect(hitPoint);
@@ -404,8 +455,12 @@ namespace Cainos.PixelArtTopDown_Basic
                     DamageVignette.Instance.Flash();
                 }
                 
-                // Stop the dash and bounce back
-                StartCoroutine(BounceBack(collision.contacts[0].normal));
+                // Either bounce back or continue through
+                if (enableBounceBack)
+                {
+                    StartCoroutine(BounceBack(collision.contacts[0].normal));
+                }
+                // If bounce is disabled, player just continues their dash through the object
             }
         }
         
@@ -515,6 +570,11 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private IEnumerator DamageSequence(float initialFreezeDuration, float flashDuration, float shakeIntensity, float shakeSpeed, float respawnDelay, System.Action onFlashComplete)
         {
+            if (SoundFXManager.Instance != null && hitSound != null)
+                SoundFXManager.Instance.PlaySound(hitSound, transform, 1f);
+
+            StopFootsteps();
+
             // End any current dash
             if (isDashing)
                 EndDash();
@@ -570,6 +630,9 @@ namespace Cainos.PixelArtTopDown_Basic
             transform.position = originalPosition;
 
             // === PHASE 3: EXPLOSION + DISAPPEAR ===
+            if (SoundFXManager.Instance != null && deathSound != null)
+                SoundFXManager.Instance.PlaySound(deathSound, transform, 1f);
+
             // Hide the player
             SetPlayerVisible(false);
             

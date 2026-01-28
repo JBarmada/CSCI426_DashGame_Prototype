@@ -7,6 +7,18 @@ public class Explodable : MonoBehaviour
     [Header("Explosion Settings")]
     public float explosionForce = 8f;
     public GameObject explosionEffect;
+    public AudioClip[] breakSounds;
+    [Range(0f, 1f)] public float explosionVolume = 0.5f;
+
+    [Header("Impact Sound Settings")]
+    [Tooltip("Sound played immediately on impact")]
+    public AudioClip hitSound;
+    [Tooltip("Start time of the hit sound segment")]
+    public float hitSoundStart = 0f;
+    [Tooltip("Duration of the hit sound segment")]
+    public float hitSoundDuration = 0.2f;
+    [Tooltip("Volume of the hit sound")]
+    public float hitSoundVolume = 0.8f;
 
     [Header("Hitstop Settings")]
     [Tooltip("How long the object gets pushed before freezing")]
@@ -138,11 +150,26 @@ public class Explodable : MonoBehaviour
     /// Call this method to trigger the explosion from an external source (like the player).
     /// This avoids race conditions with OnCollisionEnter2D callbacks.
     /// </summary>
-    public void TriggerExplosion(Vector2 hitPoint)
+    /// <param name="hitPoint">The point of impact</param>
+    /// <param name="playerCollider">If provided, ignores collision with this collider so player can pass through (object still collides with walls)</param>
+    public void TriggerExplosion(Vector2 hitPoint, Collider2D playerCollider = null)
     {
         if (exploded) return;
 
         exploded = true;
+
+        // Play the immediate impact sound
+        if (hitSound != null && SoundFXManager.Instance != null)
+        {
+            SoundFXManager.Instance.PlaySoundSegment(hitSound, transform, hitSoundStart, hitSoundDuration, hitSoundVolume);
+        }
+
+        // If a player collider is provided, ignore collision with it so player can pass through
+        // The object will still collide with walls and other environment
+        if (playerCollider != null && col != null)
+        {
+            Physics2D.IgnoreCollision(col, playerCollider, true);
+        }
 
         // Start the hitstop sequence
         StartCoroutine(HitstopSequence(hitPoint));
@@ -219,6 +246,9 @@ public class Explodable : MonoBehaviour
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
+
+        if (SoundFXManager.Instance != null && breakSounds != null && breakSounds.Length > 0)
+            SoundFXManager.Instance.PlayRandomSound(breakSounds, transform, explosionVolume);
 
         Destroy(gameObject);
     }
