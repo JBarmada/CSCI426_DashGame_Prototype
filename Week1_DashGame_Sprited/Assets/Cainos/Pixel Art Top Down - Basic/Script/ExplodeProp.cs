@@ -8,6 +8,17 @@ public class Explodable : MonoBehaviour
     public float explosionForce = 8f;
     public GameObject explosionEffect;
     public AudioClip[] breakSounds;
+    [Range(0f, 1f)] public float explosionVolume = 0.5f;
+
+    [Header("Impact Sound Settings")]
+    [Tooltip("Sound played immediately on impact")]
+    public AudioClip hitSound;
+    [Tooltip("Start time of the hit sound segment")]
+    public float hitSoundStart = 0f;
+    [Tooltip("Duration of the hit sound segment")]
+    public float hitSoundDuration = 0.2f;
+    [Tooltip("Volume of the hit sound")]
+    public float hitSoundVolume = 0.8f;
 
     [Header("Hitstop Settings")]
     [Tooltip("How long the object gets pushed before freezing")]
@@ -147,6 +158,12 @@ public class Explodable : MonoBehaviour
 
         exploded = true;
 
+        // Play the immediate impact sound
+        if (hitSound != null && SoundFXManager.Instance != null)
+        {
+            SoundFXManager.Instance.PlaySoundSegment(hitSound, transform, hitSoundStart, hitSoundDuration, hitSoundVolume);
+        }
+
         // If a player collider is provided, ignore collision with it so player can pass through
         // The object will still collide with walls and other environment
         if (playerCollider != null && col != null)
@@ -231,7 +248,7 @@ public class Explodable : MonoBehaviour
         }
 
         if (SoundFXManager.Instance != null && breakSounds != null && breakSounds.Length > 0)
-            SoundFXManager.Instance.PlayRandomSound(breakSounds, transform, 0.5f);
+            SoundFXManager.Instance.PlayRandomSound(breakSounds, transform, explosionVolume);
 
         Destroy(gameObject);
     }

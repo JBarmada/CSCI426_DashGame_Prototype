@@ -14,7 +14,7 @@ public class DamagingProp : MonoBehaviour
     [Tooltip("Prefab to spawn when the damage sequence completes (e.g., Explosion_2_Skull_Red)")]
     public GameObject damageExplosionEffect;
     [Tooltip("Sound to play when the player hits this prop")]
-    public AudioClip hitSound;
+    public AudioClip[] hitSound;
 
     [Header("Phase 1: Initial Freeze + Screen Shake")]
     [Tooltip("How long the player is completely frozen (animation stops)")]
@@ -62,7 +62,7 @@ public class DamagingProp : MonoBehaviour
         // Play hit sound
         if (SoundFXManager.Instance != null && hitSound != null)
         {
-            SoundFXManager.Instance.PlaySound(hitSound, transform, 1f);
+            SoundFXManager.Instance.PlayRandomSound(hitSound, transform, 0.7f);
         }
 
         // Start screen shake (only during initial freeze phase)

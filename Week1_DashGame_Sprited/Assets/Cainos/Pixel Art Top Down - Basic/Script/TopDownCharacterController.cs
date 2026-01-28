@@ -8,7 +8,9 @@ namespace Cainos.PixelArtTopDown_Basic
     {   
         [Header("Audio")]
         [SerializeField] private AudioClip[] walkAudios;
+        [Range(0f, 1f)] public float walkVolume = 0.5f;
         [SerializeField] private AudioClip dashSound;
+        [Range(0f, 1f)] public float dashVolume = 0.5f;
         [SerializeField] private AudioClip deathSound;
         [SerializeField] private AudioClip hitSound;
         [SerializeField] private float footstepInterval = 0.5f;
@@ -276,7 +278,7 @@ namespace Cainos.PixelArtTopDown_Basic
                 {
                     if (walkAudios != null && walkAudios.Length > 0)
                     {
-                        currentFootstepSource = SoundFXManager.Instance.PlayRandomSound(walkAudios, transform, 1f);
+                        currentFootstepSource = SoundFXManager.Instance.PlayRandomSound(walkAudios, transform, walkVolume);
                     }
                     footstepTimer = footstepInterval;
                 }
@@ -306,7 +308,9 @@ namespace Cainos.PixelArtTopDown_Basic
             trailSpawnTimer = 0f; // Spawn first trail immediately
             animator.SetBool("IsMoving", false);
             rb.excludeLayers = LayerMask.GetMask("Enemy");
-            SoundFXManager.Instance.PlaySound(dashSound, transform, 1f);
+            if (SoundFXManager.Instance != null && dashSound != null)
+                SoundFXManager.Instance.PlaySound(dashSound, transform, dashVolume);
+            
             // Spawn dash start effect
             if (dashStartEffect != null)
             {
