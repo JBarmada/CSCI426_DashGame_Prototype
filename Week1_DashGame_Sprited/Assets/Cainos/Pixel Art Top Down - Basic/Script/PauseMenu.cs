@@ -62,8 +62,9 @@ namespace Cainos.PixelArtTopDown_Basic
 
         void Start()
         {
-            // Initialize volume from current AudioListener setting
-            masterVolume = AudioListener.volume;
+            // Initialize slider position from current AudioListener setting
+            // Since we use squared curve, take square root to get slider position
+            masterVolume = Mathf.Sqrt(AudioListener.volume);
         }
 
         void InitStyles()
@@ -193,8 +194,8 @@ namespace Cainos.PixelArtTopDown_Basic
                 sliderThumbStyle
             );
 
-            // Apply volume change
-            AudioListener.volume = masterVolume;
+            // Apply volume change (squared for logarithmic feel - matches human hearing perception)
+            AudioListener.volume = masterVolume * masterVolume;
 
             // === Quit Button ===
             float buttonX = panelX + (panelWidth - buttonWidth) / 2f;
